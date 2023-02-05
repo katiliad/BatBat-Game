@@ -223,28 +223,32 @@ public abstract class GameState extends BasicState {
 	protected void populateEnemies(EnemyType[] enemies, int[][] coords) {
 		this.enemies.clear();
 		for (int i = 0; i < enemies.length; i++) {
-			Enemy e = null;
-			switch (enemies[i]) {
-			case RED_ENERGY:
-				e = new RedEnergy(this.tileMap);
-				break;
-			case UFO:
-				e = new Ufo(this.tileMap, this.player, this.enemies);
-				break;
-			case XHELBAT:
-				e = new XhelBat(this.tileMap, this.player);
-				break;
-			case SPIRIT:
-				e = new Spirit(this.tileMap, this.player, this.enemies, this.explosions);
-				break;
-			default:
-				e = new Zogu(this.tileMap);
-				break;
-			}
-
-			e.setPosition(coords[i][0], coords[i][1]);
-			this.enemies.add(e);
+			Enemy e = populateEachEnemy(enemies, coords, i);
 		}
+	}
+
+	private Enemy populateEachEnemy(Enemy.EnemyType[] enemies, int[][] coords, int i) {
+		Enemy e = null;
+		switch (enemies[i]) {
+		case RED_ENERGY:
+			e = new RedEnergy(this.tileMap);
+			break;
+		case UFO:
+			e = new Ufo(this.tileMap, this.player, this.enemies);
+			break;
+		case XHELBAT:
+			e = new XhelBat(this.tileMap, this.player);
+			break;
+		case SPIRIT:
+			e = new Spirit(this.tileMap, this.player, this.enemies, this.explosions);
+			break;
+		default:
+			e = new Zogu(this.tileMap);
+			break;
+		}
+		e.setPosition(coords[i][0], coords[i][1]);
+		this.enemies.add(e);
+		return e;
 	}
 
 	@Override
