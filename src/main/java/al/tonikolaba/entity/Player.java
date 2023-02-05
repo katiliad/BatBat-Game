@@ -397,14 +397,7 @@ public class Player extends MapObject {
 		if (dx == 0)
 			x = (int) x;
 
-		checkAttack();
-
-		checkEnemyInteraction();
-
-		checkAnimations();
-
-		animation.update();
-
+		runChecksAndUpdateAnimation();
 		// set direction
 		if (!attacking && !upattacking && !charging && !knockback) {
 			if (right)
@@ -415,6 +408,13 @@ public class Player extends MapObject {
 
 	}
 
+	private void runChecksAndUpdateAnimation() {
+		checkAttack();
+		checkEnemyInteraction();
+		checkAnimations();
+		animation.update();
+	}
+ 
 	private void checkAttack() {
 		// check done flinching
 		if (flinching) {
