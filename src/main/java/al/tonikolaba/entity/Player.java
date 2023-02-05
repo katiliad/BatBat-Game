@@ -72,7 +72,7 @@ public class Player extends MapObject {
 	// emotes
 	private BufferedImage confused;
 	private BufferedImage surprised;
-	private int emote = NONE_EMOTE;
+	private Emote emote;
 
 	public Player(TileMap tm) {
 
@@ -163,7 +163,11 @@ public class Player extends MapObject {
 	}
 
 	public void setEmote(int i) {
-		emote = i;
+		if (i == SURPRISED_EMOTE)
+			this.emote = new SurprisedEmote();
+		if (i == CONFUSED_EMOTE)
+			this.emote = new ConfusedEmote();
+		this.emote = null;
 	}
 
 	public void setTeleporting(boolean b) {
@@ -557,12 +561,7 @@ public class Player extends MapObject {
 	@Override
 	public void draw(Graphics2D g) {
 
-		// draw emote
-		if (emote == CONFUSED_EMOTE) {
-			g.drawImage(confused, (int) (x + xmap - cwidth / 2.0), (int) (y + ymap - 40), null);
-		} else if (emote == SURPRISED_EMOTE) {
-			g.drawImage(surprised, (int) (x + xmap - cwidth / 2.0), (int) (y + ymap - 40), null);
-		}
+		emote.draw(g, this);
 
 		// draw energy particles
 		for (int i = 0; i < energyParticles.size(); i++) {
@@ -576,5 +575,33 @@ public class Player extends MapObject {
 
 		super.draw(g);
 
+	}
+
+	public int getEmote() {
+		return emote.getEmote();
+	}
+
+	public BufferedImage getSurprised() {
+		return surprised;
+	}
+
+	public BufferedImage getConfused() {
+		return confused;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getXmap() {
+		return xmap;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public double getYmap() {
+		return ymap;
 	}
 }
