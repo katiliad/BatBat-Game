@@ -148,10 +148,7 @@ public class Spirit extends Enemy {
 				explosions.add(new Explosion(tileMap, (int) x, (int) y));
 			}
 			if (stepCount >= 90 && stepCount % 30 == 0) {
-				RedEnergy de = new RedEnergy(tileMap);
-				de.setPosition(x, y);
-				de.setVector(3 * Math.sin(stepCount / 32), 3 * Math.cos(stepCount / 32));
-				de.setType(RedEnergy.BOUNCE);
+				RedEnergy de = setDEAttributesIfStepIsOver90();
 				enemies.add(de);
 			}
 			return;
@@ -181,11 +178,7 @@ public class Spirit extends Enemy {
 				}
 			}
 			if (stepCount % 10 == 0) { // 60 per te hedhur me shpesh bombat
-				RedEnergy de = new RedEnergy(tileMap);
-				de.setType(RedEnergy.GRAVITY);
-				de.setPosition(x, y);
-				int dir = Math.random() < 0.5 ? 1 : -1;
-				de.setVector(dir, 0);
+				RedEnergy de = setDEAttributes();
 				enemies.add(de);
 			}
 			if (stepCount == 559) {
@@ -252,6 +245,23 @@ public class Spirit extends Enemy {
 				step++;
 			}
 		}
+	}
+
+	private RedEnergy setDEAttributesIfStepIsOver90() {
+		RedEnergy de = new RedEnergy(tileMap);
+		de.setPosition(x, y);
+		de.setVector(3 * Math.sin(stepCount / 32), 3 * Math.cos(stepCount / 32));
+		de.setType(RedEnergy.BOUNCE);
+		return de;
+	}
+
+	private RedEnergy setDEAttributes() {
+		RedEnergy de = new RedEnergy(tileMap);
+		de.setType(RedEnergy.GRAVITY);
+		de.setPosition(x, y);
+		int dir = Math.random() < 0.5 ? 1 : -1;
+		de.setVector(dir, 0);
+		return de;
 	}
 
 	@Override

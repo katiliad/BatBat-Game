@@ -68,10 +68,14 @@ public class Portal extends MapObject {
     public void setOpened() {
         if (opened)
             return;
-        animation.setFrames(openedSprites);
-        animation.setDelay(2);
-        opened = true;
+        setAnimationAttributes();
+		opened = true;
     }
+
+	private void setAnimationAttributes() {
+		animation.setFrames(openedSprites);
+		animation.setDelay(2);
+	}
 
     public boolean isOpened() {
         return opened;

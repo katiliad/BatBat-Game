@@ -373,12 +373,16 @@ public class Player extends MapObject {
 
 	private void setAnimation(int i) {
 		if (currentAction != i) {
-			currentAction = i;
-			animation.setFrames(sprites.get(currentAction));
-			animation.setDelay(SPRITEDELAYS[currentAction]);
+			setAnimationAtributes(i);
 			width = FRAMEWIDTHS[currentAction];
 			height = FRAMEHEIGHTS[currentAction];
 		}
+	}
+
+	private void setAnimationAtributes(int i) {
+		currentAction = i;
+		animation.setFrames(sprites.get(currentAction));
+		animation.setDelay(SPRITEDELAYS[currentAction]);
 	}
 
 	public void update() {
@@ -523,22 +527,33 @@ public class Player extends MapObject {
 	}
 
 	private void checkAttackingAnim() {
+		setArXandY();
 		if (currentAction != ATTACKING_ANIM) {
 			JukeBox.play(PLAYERATTACK_MUSIC_NAME);
 			setAnimation(ATTACKING_ANIM);
+		} else {
+			AnimationFourActions();
+		}
+	}
+
+	private void AnimationFourActions() {
+		if (animation.getFrame() == 4 && animation.getCount() == 0) {
+			for (int c = 0; c < 3; c++) {
+				if (facingRight)
+					energyParticles.add(new EnergyParticle(tileMap, ar.x + ar.width - 4, ar.y + ar.height / 2,
+							EnergyParticle.ENERGY_RIGHT));
+				else
+					energyParticles.add(
+							new EnergyParticle(tileMap, ar.x + 4, ar.y + ar.height / 2, EnergyParticle.ENERGY_LEFT));
+			}
+		}
+	}
+
+	private void setArXandY() {
+		if (currentAction != ATTACKING_ANIM) {
 			ar.y = (int) y - 6;
 			ar.x = facingRight ? (int) x + 10 : (int) x - 40;
 		} else {
-			if (animation.getFrame() == 4 && animation.getCount() == 0) {
-				for (int c = 0; c < 3; c++) {
-					if (facingRight)
-						energyParticles.add(new EnergyParticle(tileMap, ar.x + ar.width - 4, ar.y + ar.height / 2,
-								EnergyParticle.ENERGY_RIGHT));
-					else
-						energyParticles.add(new EnergyParticle(tileMap, ar.x + 4, ar.y + ar.height / 2,
-								EnergyParticle.ENERGY_LEFT));
-				}
-			}
 		}
 	}
 
@@ -549,11 +564,15 @@ public class Player extends MapObject {
 			aur.x = (int) x - 15;
 			aur.y = (int) y - 50;
 		} else {
-			if (animation.getFrame() == 4 && animation.getCount() == 0) {
-				for (int c = 0; c < 3; c++) {
-					energyParticles.add(
-							new EnergyParticle(tileMap, aur.x + aur.width / 2, aur.y + 5, EnergyParticle.ENERGY_UP));
-				}
+			energyParticlesModify();
+		}
+	}
+
+	private void energyParticlesModify() {
+		if (animation.getFrame() == 4 && animation.getCount() == 0) {
+			for (int c = 0; c < 3; c++) {
+				energyParticles
+						.add(new EnergyParticle(tileMap, aur.x + aur.width / 2, aur.y + 5, EnergyParticle.ENERGY_UP));
 			}
 		}
 	}
