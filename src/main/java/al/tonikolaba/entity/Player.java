@@ -339,10 +339,7 @@ public class Player extends MapObject {
 	}
 
 	private void movement() {
-		double maxSpeed = this.maxSpeed;
-		if (dashing)
-			maxSpeed *= 1.75;
-
+		double maxSpeed = maxSpeed();
 		// movement
 		if (left) {
 			dx = Math.max(-maxSpeed, dx - moveSpeed);
@@ -369,6 +366,13 @@ public class Player extends MapObject {
 			else
 				dx = -moveSpeed * (3 - chargingTick * 0.07);
 		}
+	}
+
+	private double maxSpeed() {
+		double maxSpeed = this.maxSpeed;
+		if (dashing)
+			maxSpeed *= 1.75;
+		return maxSpeed;
 	}
 
 	private void setAnimation(int i) {
@@ -439,28 +443,46 @@ public class Player extends MapObject {
 			}
 		}
 
-		for (EnergyParticle e : particlesToRemove) {
-			energyParticles.remove(e);
-		}
-
+		energyParticleFacingDirection(particlesToRemove);
 		// check attack finished
 		if ((currentAction == ATTACKING_ANIM || currentAction == UPATTACKING_ANIM) && animation.hasPlayedOnce()) {
 			attacking = false;
 			upattacking = false;
 		}
+		CheckAttackState();
 		if (currentAction == CHARGING_ANIM) {
 			if (animation.hasPlayed(5)) {
 				charging = false;
 			}
-			cr.y = (int) y - 20;
+
+		}
+	}
+
+	private void CheckAttackState() {
+		if (currentAction == CHARGING_ANIM) {
+			checkAttackState();
+		}
+	}
+
+	private void checkAttackState() {
+		cr.y = (int) y - 20;
+		if (facingRight) {
+			cr.x = (int) x - 15;
+		} else {
+			cr.x = (int) x - 35;
+		}
+	}
+
+	private void energyParticleFacingDirection(ArrayList<EnergyParticle> particlesToRemove) {
+		for (EnergyParticle e : particlesToRemove) {
+			energyParticles.remove(e);
+		}
+		if (currentAction == CHARGING_ANIM) {
 			if (facingRight) {
-				cr.x = (int) x - 15;
 				energyParticles.add(new EnergyParticle(tileMap, x + 30, y, EnergyParticle.ENERGY_RIGHT));
 			} else {
-				cr.x = (int) x - 35;
 				energyParticles.add(new EnergyParticle(tileMap, x - 30, y, EnergyParticle.ENERGY_LEFT));
 			}
-
 		}
 	}
 
@@ -538,15 +560,23 @@ public class Player extends MapObject {
 
 	private void AnimationFourActions() {
 		if (animation.getFrame() == 4 && animation.getCount() == 0) {
-			for (int c = 0; c < 3; c++) {
-				if (facingRight)
-					energyParticles.add(new EnergyParticle(tileMap, ar.x + ar.width - 4, ar.y + ar.height / 2,
-							EnergyParticle.ENERGY_RIGHT));
-				else
-					energyParticles.add(
-							new EnergyParticle(tileMap, ar.x + 4, ar.y + ar.height / 2, EnergyParticle.ENERGY_LEFT));
-			}
+			energyParticles();
 		}
+	}
+
+	private void energyParticles() {
+		for (int c = 0; c < 3; c++) {
+			energyParticles1();
+		}
+	}
+
+	private void energyParticles1() {
+		if (facingRight)
+			energyParticles.add(new EnergyParticle(tileMap, ar.x + ar.width - 4, ar.y + ar.height / 2,
+					EnergyParticle.ENERGY_RIGHT));
+		else
+			energyParticles
+					.add(new EnergyParticle(tileMap, ar.x + 4, ar.y + ar.height / 2, EnergyParticle.ENERGY_LEFT));
 	}
 
 	private void setArXandY() {
